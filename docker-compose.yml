@@ -2,6 +2,8 @@ services:
   db:
     build:
       context: ./docker/postgres
+      args:
+        PGVECTOR_VERSION: ${PGVECTOR_VERSION:-v0.8.3}
     container_name: postgres-postgis-pgvector
     restart: unless-stopped
 
@@ -11,7 +13,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
     ports:
-      - "5432:5432"
+      - "5442:5432"
 
     volumes:
       - postgres_data:/var/lib/postgresql
@@ -23,6 +25,7 @@ services:
       retries: 10
 
   web:
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
     build:
       context: .
       dockerfile: docker/django/Dockerfile

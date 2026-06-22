@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.13-slim-bookworm
+ARG PYTHON_IMAGE=python:3.13-slim-bookworm
+FROM --platform=$TARGETPLATFORM ${PYTHON_IMAGE}
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
