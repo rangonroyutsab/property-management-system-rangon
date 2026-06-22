@@ -1,0 +1,48 @@
+{% extends "property_app/base.html" %}
+
+{% block title %}{% if query %}{{ query }} Properties{% else %}All Properties{% endif %} · RentNav{% endblock %}
+
+{% block content %}
+<div class="listing-page">
+    <div class="wrap">
+        <div class="listing-head">
+            {% if query %}
+                <h1>{{ query }} Properties</h1>
+            {% else %}
+                <h1>All Properties</h1>
+            {% endif %}
+            <p>{{ page.paginator.count }} propert{{ page.paginator.count|pluralize:"y,ies" }} found</p>
+        </div>
+
+        <form method="get" action="{% url 'property_list' %}" class="listing-form">
+            <div class="listing-search-bar">
+                <div class="search-bar-sm">
+                    <input
+                        class="autocomplete-input"
+                        type="text"
+                        name="q"
+                        value="{{ query|default:'' }}"
+                        placeholder="Search location or property name..."
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="btn-search">Search</button>
+                </div>
+                <div class="autocomplete-dropdown"></div>
+            </div>
+        </form>
+
+        <div class="property-grid">
+            {% for property in page %}
+                {% include "property_app/partials/_property_card.html" with property=property %}
+            {% empty %}
+                <div class="empty-state empty-state-card">
+                    <p>No properties found{% if query %} for “{{ query }}”{% endif %}.</p>
+                    <a href="{% url 'property_list' %}">Clear search and browse all</a>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% include "property_app/partials/_pagination.html" with page=page query=query %}
+    </div>
+</div>
+{% endblock %}

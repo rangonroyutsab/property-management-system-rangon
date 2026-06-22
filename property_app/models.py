@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from pgvector.django import VectorField, HnswIndex
+from pgvector.django import VectorField
 
 
 class Location(models.Model):
@@ -10,7 +10,6 @@ class Location(models.Model):
 
     def __str__(self):
         return self.name
-
 
 
 class Property(models.Model):
@@ -28,6 +27,9 @@ class Property(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def primary_image(self):
+        return self.images.filter(is_primary=True).first() or self.images.first()  
 
 
 class PropertyImage(models.Model):

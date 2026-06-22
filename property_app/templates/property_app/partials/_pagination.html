@@ -1,0 +1,19 @@
+{% if page.paginator.num_pages > 1 %}
+<nav class="pagination">
+    {% with q=query|default:''|urlencode %}
+
+        {% if page.has_previous %}
+            <a href="?q={{ q }}&page={{ page.previous_page_number }}">Prev</a>
+        {% endif %}
+
+        <span>
+            Page {{ page.number }} of {{ page.paginator.num_pages }}
+        </span>
+
+        {% if page.has_next %}
+            <a href="?q={{ q }}&page={{ page.next_page_number }}">Next</a>
+        {% endif %}
+
+    {% endwith %}
+</nav>
+{% endif %}

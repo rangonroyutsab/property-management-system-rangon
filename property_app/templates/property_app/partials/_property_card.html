@@ -1,0 +1,20 @@
+<a href="{% url 'property_detail' property.slug %}" class="property-card">
+    <div class="card-img">
+        {% with image=property.primary_image %}
+            {% if image %}
+                <img src="{{ image.image.url }}" alt="{{ property.title }}">
+            {% else %}
+                <div class="card-img-placeholder">No image available</div>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="card-body">
+        <p class="card-type">{{ property.property_type|title }}</p>
+        <h3 class="card-title">{{ property.title }}</h3>
+        <p class="card-location">{{ property.location.name }}</p>
+        <p class="card-meta">{{ property.bedrooms }} Bed &nbsp;·&nbsp; {{ property.bathrooms }} Bath</p>
+        <p class="card-price">
+            ${{ property.price }}<span> / Night</span>
+        </p>
+    </div>
+</a>

@@ -57,6 +57,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin" # fix for OpenStreetMap referer error
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [

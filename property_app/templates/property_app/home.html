@@ -1,0 +1,39 @@
+{% extends "property_app/base.html" %}
+
+{% block title %}RentNav — Rental Property Search{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-inner wrap">
+        <p class="hero-eyebrow">Vacation Rentals Worldwide</p>
+        <h1>Find your perfect stay</h1>
+        <p class="hero-sub">Search available vacation homes, cabins, villas, and apartments by location.</p>
+        {% include "property_app/partials/_search_form.html" %}
+    </div>
+</section>
+
+<section class="section">
+    <div class="wrap">
+        <div class="section-head">
+            <div>
+                <p class="eyebrow">Available Now</p>
+                <h2>Featured properties</h2>
+            </div>
+            <a href="{% url 'property_list' %}" class="link-all">View all rentals &rarr;</a>
+        </div>
+
+        {% if featured %}
+            <div class="property-grid">
+                {% for property in featured %}
+                    {% include "property_app/partials/_property_card.html" with property=property %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state empty-state-card">
+                <p>No featured properties are available right now.</p>
+                <a href="{% url 'property_list' %}">Browse all properties</a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

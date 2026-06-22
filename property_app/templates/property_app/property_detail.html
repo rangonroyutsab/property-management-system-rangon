@@ -1,0 +1,97 @@
+{% extends "property_app/base.html" %}
+{% load property_extras %}
+
+{% block title %}{{ property.title }} · RentNav{% endblock %}
+
+{% block content %}
+<div class="detail-page">
+    <div class="wrap">
+        <a href="{% url 'property_list' %}" class="detail-back">&larr; Back to properties</a>
+
+        <div class="detail-gallery">
+            {% with primary=property.primary_image %}
+                <div class="gallery-primary">
+                    {% if primary %}
+                        <img id="gallery-main-image" src="{{ primary.image.url }}" alt="{{ property.title }}">
+                    {% else %}
+                        <div class="gallery-placeholder">No image available</div>
+                    {% endif %}
+                </div>
+            {% endwith %}
+
+            <div class="gallery-strip" aria-label="Property images">
+                {% for image in property.images.all %}
+                    <button type="button" class="gallery-thumb" data-image-url="{{ image.image.url }}" data-image-alt="{{ image.caption|default:property.title }}">
+                        <img src="{{ image.image.url }}" alt="{{ image.caption|default:property.title }}">
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="detail-layout">
+            <div class="detail-main">
+                <h1>{{ property.title }}</h1>
+                <p class="detail-location">📍 {{ property.location.name }}</p>
+
+                {% if property.distance_from_city %}
+                    <p class="detail-distance">
+                        📏 {{ property.distance_from_city|km_value|floatformat:1 }} km from {{ property.location.name }} centre
+                    </p>
+                {% endif %}
+
+                {% if property.description %}
+                    <section class="detail-section">
+                        <h2>About this property</h2>
+                        <p>{{ property.description|linebreaksbr }}</p>
+                    </section>
+                {% endif %}
+
+                {% if property.amenities %}
+                    <section class="detail-section">
+                        <h2>Amenities</h2>
+                        <div class="amenities-list">
+                            {% for amenity in property.amenities|split:',' %}
+                                {% if amenity|trim %}
+                                    <span class="amenity-tag">{{ amenity|trim }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+            </div>
+
+            <aside class="detail-sidebar">
+                <div class="price-card">
+                    <div class="price-main">
+                        ${{ property.price }}<span> / night</span>
+                    </div>
+                    <ul class="stat-list">
+                        <li>
+                            <span class="label">Property type</span>
+                            <span class="value">{{ property.property_type|title }}</span>
+                        </li>
+                        <li>
+                            <span class="label">Status</span>
+                            <span class="value">{{ property.status|title }}</span>
+                        </li>
+                        <li>
+                            <span class="label">Bedrooms</span>
+                            <span class="value">{{ property.bedrooms }}</span>
+                        </li>
+                        <li>
+                            <span class="label">Bathrooms</span>
+                            <span class="value">{{ property.bathrooms }}</span>
+                        </li>
+                        {% if property.distance_from_city %}
+                            <li>
+                                <span class="label">Distance to centre</span>
+                                <span class="value">{{ property.distance_from_city|km_value|floatformat:1 }} km</span>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+{% endblock %}
