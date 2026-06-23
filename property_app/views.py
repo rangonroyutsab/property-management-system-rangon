@@ -8,7 +8,11 @@ from .models import Property, Location
 
 
 def home(request):
-    featured = Property.objects.select_related("location").order_by("-id")[:4]
+    featured = (
+        Property.objects.select_related("location")
+        .order_by("-id")
+        .filter(status="available")[:6]
+    )
     return render(request, "property_app/home.html", {"featured": featured})
 
 
@@ -30,11 +34,15 @@ def property_list(request):
     paginator = Paginator(properties, 9)
     page = paginator.get_page(request.GET.get("page"))
 
-    return render(request, "property_app/property_list.html", {
-        "page": page,
-        "query": query,
-        "sort": sort if sort in sort_options else "",
-    })
+    return render(
+        request,
+        "property_app/property_list.html",
+        {
+            "page": page,
+            "query": query,
+            "sort": sort if sort in sort_options else "",
+        },
+    )
 
 
 def property_detail(request, slug):
@@ -44,9 +52,13 @@ def property_detail(request, slug):
         ),
         slug=slug,
     )
-    return render(request, "property_app/property_detail.html", {
-        "property": property_obj,
-    })
+    return render(
+        request,
+        "property_app/property_detail.html",
+        {
+            "property": property_obj,
+        },
+    )
 
 
 def location_autocomplete(request):
@@ -54,5 +66,7 @@ def location_autocomplete(request):
     if len(query) < 2:
         return JsonResponse([], safe=False)
 
-    locations = Location.objects.filter(name__icontains=query).values("name", "slug")[:6]
+    locations = Location.objects.filter(name__icontains=query).values("name", "slug")[
+        :6
+    ]
     return JsonResponse(list(locations), safe=False)
