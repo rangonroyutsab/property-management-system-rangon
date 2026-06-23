@@ -685,7 +685,6 @@ button {
 
 .listing-search-bar {
     position: relative;
-    max-width: 560px;
 }
 
 .sort-form {
@@ -1062,20 +1061,12 @@ button {
         flex-direction: column;
     }
 
-    .listing-search-bar {
-        max-width: none;
-    }
-
     .sort-form {
         justify-content: space-between;
     }
 
     .sort-form select {
         flex: 1;
-    }
-
-    .site-nav {
-        display: none;
     }
 
     .gallery-primary {
@@ -1087,6 +1078,10 @@ button {
 @media (max-width: 540px) {
     .property-grid {
         grid-template-columns: 1fr;
+    }
+
+    .site-nav {
+        display: none;
     }
 
     .footer-inner {
