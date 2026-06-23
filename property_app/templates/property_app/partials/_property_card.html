@@ -2,7 +2,7 @@
     <div class="card-img">
         {% with image=property.primary_image %}
             {% if image %}
-                <img src="{{ image.image.url }}" alt="{{ property.title }}">
+                <img src="{{ image.get_image_url }}" alt="{{ property.title }}">
             {% else %}
                 <div class="card-img-placeholder">No image available</div>
             {% endif %}

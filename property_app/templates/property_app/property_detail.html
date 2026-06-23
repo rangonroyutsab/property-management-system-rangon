@@ -12,7 +12,7 @@
             {% with primary=property.primary_image %}
                 <div class="gallery-primary">
                     {% if primary %}
-                        <img id="gallery-main-image" src="{{ primary.image.url }}" alt="{{ property.title }}">
+                        <img id="gallery-main-image" src="{{ primary.get_image_url }}" alt="{{ property.title }}">
                     {% else %}
                         <div class="gallery-placeholder">No image available</div>
                     {% endif %}
@@ -21,8 +21,8 @@
 
             <div class="gallery-strip" aria-label="Property images">
                 {% for image in property.images.all %}
-                    <button type="button" class="gallery-thumb" data-image-url="{{ image.image.url }}" data-image-alt="{{ image.caption|default:property.title }}">
-                        <img src="{{ image.image.url }}" alt="{{ image.caption|default:property.title }}">
+                    <button type="button" class="gallery-thumb" data-image-url="{{ get_image_url }}" data-image-alt="{{ image.caption|default:property.title }}">
+                        <img src="{{ image.get_image_url }}" alt="{{ image.caption|default:property.title }}">
                     </button>
                 {% endfor %}
             </div>
