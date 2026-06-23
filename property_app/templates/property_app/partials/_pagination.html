@@ -1,21 +1,15 @@
 {% if page.paginator.num_pages > 1 %}
-<nav class="pagination">
-    {% with q=query|default:''|urlencode %}
-    {% with sort_key=sort|default:''|urlencode %}
-
-        {% if page.has_previous %}
-            <a href="?q={{ q }}&sort={{ sort_key }}&page={{ page.previous_page_number }}">Prev</a>
-        {% endif %}
-
-        <span>
-            Page {{ page.number }} of {{ page.paginator.num_pages }}
-        </span>
-
-        {% if page.has_next %}
-            <a href="?q={{ q }}&sort={{ sort_key }}&page={{ page.next_page_number }}">Next</a>
-        {% endif %}
-
-    {% endwith %}
-    {% endwith %}
-</nav>
+    <nav class="pagination">
+        {% with q=query|default:''|urlencode %}
+            {% with sort_key=sort|default:''|urlencode %}
+                {% if page.has_previous %}
+                    <a href="?q={{ q }}&sort={{ sort_key }}&page={{ page.previous_page_number }}">Prev</a>
+                {% endif %}
+                <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+                {% if page.has_next %}
+                    <a href="?q={{ q }}&sort={{ sort_key }}&page={{ page.next_page_number }}">Next</a>
+                {% endif %}
+            {% endwith %}
+        {% endwith %}
+    </nav>
 {% endif %}

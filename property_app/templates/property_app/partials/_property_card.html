@@ -1,4 +1,5 @@
-<a href="{% url 'property_detail' property.slug %}" class="property-card">
+<a href="{% url 'property_detail' property.slug %}"
+   class="property-card">
     <div class="card-img">
         {% with image=property.primary_image %}
             {% if image %}
@@ -21,7 +22,7 @@
         </div>
         <div class="card-footer">
             <p class="card-price">
-                ${{ property.price }}<span> / night</span>
+                ${{ property.price }}<span>/ night</span>
             </p>
             <span class="card-action">View stay</span>
         </div>

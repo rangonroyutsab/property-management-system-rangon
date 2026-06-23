@@ -1,15 +1,13 @@
 <form action="{% url 'property_list' %}" method="get">
     <div class="search-wrap">
         <div class="search-bar">
-            <input
-                class="autocomplete-input"
-                type="text"
-                name="q"
-                value="{{ query|default:'' }}"
-                placeholder="Where are you going?"
-                autocomplete="off"
-                aria-label="Search by location"
-            >
+            <input class="autocomplete-input"
+                   type="text"
+                   name="q"
+                   value="{{ query|default:'' }}"
+                   placeholder="Where are you going?"
+                   autocomplete="off"
+                   aria-label="Search by location">
             <button type="submit" class="btn-search">Search</button>
         </div>
         <div class="autocomplete-dropdown"></div>

@@ -1,65 +1,68 @@
 {% extends "property_app/base.html" %}
-
-{% block title %}{% if query %}{{ query }} Properties{% else %}All Properties{% endif %} · RentNav{% endblock %}
-
+{% block title %}
+    {% if query %}
+        {{ query }} Properties
+    {% else %}
+        All Properties
+    {% endif %}
+    · RentNav
+{% endblock %}
 {% block content %}
-<div class="listing-page">
-    <div class="wrap">
-        <div class="listing-head">
-            {% if query %}
-                <h1>{{ query }} Properties</h1>
-            {% else %}
-                <h1>All Properties</h1>
-            {% endif %}
-            <p>{{ page.paginator.count }} propert{{ page.paginator.count|pluralize:"y,ies" }} found</p>
-        </div>
-
-        <div class="listing-toolbar">
-            <form method="get" action="{% url 'property_list' %}" class="listing-form">
-                {% if sort %}
-                    <input type="hidden" name="sort" value="{{ sort }}">
-                {% endif %}
-                <div class="listing-search-bar">
-                    <div class="search-bar-sm">
-                        <input
-                            class="autocomplete-input"
-                            type="text"
-                            name="q"
-                            value="{{ query|default:'' }}"
-                            placeholder="Search location or property name..."
-                            autocomplete="off"
-                        >
-                        <button type="submit" class="btn-search">Search</button>
-                    </div>
-                    <div class="autocomplete-dropdown"></div>
-                </div>
-            </form>
-
-            <form method="get" action="{% url 'property_list' %}" class="sort-form">
+    <div class="listing-page">
+        <div class="wrap">
+            <div class="listing-head">
                 {% if query %}
-                    <input type="hidden" name="q" value="{{ query }}">
+                    <h1>{{ query }} Properties</h1>
+                {% else %}
+                    <h1>All Properties</h1>
                 {% endif %}
-                <label for="sort">Sort by</label>
-                <select id="sort" name="sort" onchange="this.form.submit()">
-                    <option value="" {% if not sort %}selected{% endif %}>Newest</option>
-                    <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>Price: low to high</option>
-                    <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>Price: high to low</option>
-                </select>
-            </form>
+                <p>{{ page.paginator.count }} propert{{ page.paginator.count|pluralize:"y,ies" }} found</p>
+            </div>
+            <div class="listing-toolbar">
+                <form method="get" action="{% url 'property_list' %}" class="listing-form">
+                    {% if sort %}
+                        <input type="hidden" name="sort" value="{{ sort }}">
+                    {% endif %}
+                    <div class="listing-search-bar">
+                        <div class="search-bar-sm">
+                            <input class="autocomplete-input"
+                                   type="text"
+                                   name="q"
+                                   value="{{ query|default:'' }}"
+                                   placeholder="Search location or property name..."
+                                   autocomplete="off">
+                            <button type="submit" class="btn-search">Search</button>
+                        </div>
+                        <div class="autocomplete-dropdown"></div>
+                    </div>
+                </form>
+                <form method="get" action="{% url 'property_list' %}" class="sort-form">
+                    {% if query %}
+                        <input type="hidden" name="q" value="{{ query }}">
+                    {% endif %}
+                    <label for="sort">Sort by</label>
+                    <select id="sort" name="sort" onchange="this.form.submit()">
+                        <option value="" {% if not sort %}selected{% endif %}>Newest</option>
+                        <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>Price: low to high</option>
+                        <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>Price: high to low</option>
+                    </select>
+                </form>
+            </div>
+            <div class="property-grid">
+                {% for property in page %}
+                    {% include "property_app/partials/_property_card.html" with property=property %}
+                {% empty %}
+                    <div class="empty-state empty-state-card">
+                        <p>
+                            No properties found
+                            {% if query %}for “{{ query }}”{% endif %}
+                            .
+                        </p>
+                        <a href="{% url 'property_list' %}">Clear search and browse all</a>
+                    </div>
+                {% endfor %}
+            </div>
+            {% include "property_app/partials/_pagination.html" with page=page query=query sort=sort %}
         </div>
-
-        <div class="property-grid">
-            {% for property in page %}
-                {% include "property_app/partials/_property_card.html" with property=property %}
-            {% empty %}
-                <div class="empty-state empty-state-card">
-                    <p>No properties found{% if query %} for “{{ query }}”{% endif %}.</p>
-                    <a href="{% url 'property_list' %}">Clear search and browse all</a>
-                </div>
-            {% endfor %}
-        </div>
-
-        {% include "property_app/partials/_pagination.html" with page=page query=query sort=sort %}
     </div>
-</div>
 {% endblock %}

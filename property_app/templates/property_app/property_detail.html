@@ -1,169 +1,137 @@
 {% extends "property_app/base.html" %}
 {% load property_extras %}
-
 {% block title %}{{ property.title }} · RentNav{% endblock %}
-
 {% block content %}
-<div class="detail-page">
-    <div class="wrap">
-
-        <div class="detail-breadcrumb">
-            <a href="{% url 'home' %}">Home</a>
-            <span>›</span>
-            <a href="{% url 'property_list' %}">Properties</a>
-            <span>›</span>
-            <span>{{ property.location.name }}</span>
-        </div>
-
-        <div class="detail-heading">
-            <h1>{{ property.title }}</h1>
-            <div class="detail-meta-row">
-                <span class="detail-meta-item">
-                    <span class="detail-meta-icon">🏠</span>
-                    <span>{{ property.property_type|title }}</span>
-                </span>
-
-                <span class="detail-meta-item">
-                    <span class="detail-meta-icon">🛏</span>
-                    <span>{{ property.bedrooms }} Bedrooms</span>
-                </span>
-
-                <span class="detail-meta-item">
-                    <span class="detail-meta-icon">🛁</span>
-                    <span>{{ property.bathrooms }} Bathrooms</span>
-                </span>
-
-                <span class="detail-meta-item">
-                    <span class="detail-meta-icon">📍</span>
-                    <span>{{ property.location.name }}</span>
-                </span>
-
-                {% if distance_km is not None %}
+    <div class="detail-page">
+        <div class="wrap">
+            <div class="detail-breadcrumb">
+                <a href="{% url 'home' %}">Home</a>
+                <span>›</span>
+                <a href="{% url 'property_list' %}">Properties</a>
+                <span>›</span>
+                <span>{{ property.location.name }}</span>
+            </div>
+            <div class="detail-heading">
+                <h1>{{ property.title }}</h1>
+                <div class="detail-meta-row">
                     <span class="detail-meta-item">
-                        <span class="detail-meta-icon">📏</span>
-                        <span>{{ distance_km }} km from city</span>
+                        <span class="detail-meta-icon">🏠</span>
+                        <span>{{ property.property_type|title }}</span>
                     </span>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="detail-gallery-rbo">
-            {% with primary=property.primary_image %}
-                <div class="gallery-rbo-main">
-                    {% if primary %}
-                        <img
-                            id="gallery-main-image"
-                            src="{{ primary.get_image_url }}"
-                            alt="{{ property.title }}"
-                        >
-                    {% else %}
-                        <div class="gallery-placeholder">No image available</div>
+                    <span class="detail-meta-item">
+                        <span class="detail-meta-icon">🛏</span>
+                        <span>{{ property.bedrooms }} Bedrooms</span>
+                    </span>
+                    <span class="detail-meta-item">
+                        <span class="detail-meta-icon">🛁</span>
+                        <span>{{ property.bathrooms }} Bathrooms</span>
+                    </span>
+                    <span class="detail-meta-item">
+                        <span class="detail-meta-icon">📍</span>
+                        <span>{{ property.location.name }}</span>
+                    </span>
+                    {% if distance_km is not None %}
+                        <span class="detail-meta-item">
+                            <span class="detail-meta-icon">📏</span>
+                            <span>{{ distance_km }} km from city</span>
+                        </span>
                     {% endif %}
-
                 </div>
-            {% endwith %}
-
-            <div class="gallery-rbo-grid">
-                {% for image in property.images.all|slice:"1:5" %}
-                    <button
-                        type="button"
-                        class="gallery-rbo-thumb gallery-thumb"
-                        data-image-url="{{ image.get_image_url }}"
-                        data-image-alt="{{ image.caption|default:property.title }}"
-                    >
-                        <img
-                            src="{{ image.get_image_url }}"
-                            alt="{{ image.caption|default:property.title }}"
-                        >
-                    </button>
-                {% empty %}
-                    {% for image in property.images.all|slice:":4" %}
-                        <button
-                            type="button"
-                            class="gallery-rbo-thumb gallery-thumb"
-                            data-image-url="{{ image.get_image_url }}"
-                            data-image-alt="{{ image.caption|default:property.title }}"
-                        >
-                            <img
-                                src="{{ image.get_image_url }}"
-                                alt="{{ image.caption|default:property.title }}"
-                            >
-                        </button>
-                    {% endfor %}
-                {% endfor %}
             </div>
-        </div>
-
-        <h2 class="detail-subtitle">
-            {{ property.bedrooms }} Bedroom {{ property.property_type|title }} in {{ property.location.name }}
-        </h2>
-
-        <div class="detail-layout">
-            <div class="detail-main">
-
-                {% if property.description %}
-                    <section class="detail-section">
-                        <h2>About this property</h2>
-                        <p>{{ property.description|linebreaksbr }}</p>
-                    </section>
-                {% endif %}
-
-                {% if property.amenities %}
-                    <section class="detail-section">
-                        <h2>Amenities</h2>
-                        <div class="amenities-grid">
-                            {% for amenity in property.amenities|split:',' %}
-                                {% if amenity|trim %}
-                                    <span class="amenity-item">
-                                        <span class="amenity-icon" aria-hidden="true"></span>
-                                        <span>{{ amenity|trim }}</span>
-                                    </span>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </section>
-                {% endif %}
-            </div>
-
-            <aside class="detail-sidebar">
-                <div class="price-card">
-                    <p class="price-card-label">Nightly rate</p>
-
-                    <div class="price-main">
-                        ${{ property.price }}<span> / night</span>
-                    </div>
-
-                    <ul class="stat-list">
-                        <li>
-                            <span class="label">Property type</span>
-                            <span class="value">{{ property.property_type|title }}</span>
-                        </li>
-
-                        <li>
-                            <span class="label">Status</span>
-                            <span class="value">{{ property.status|title }}</span>
-                        </li>
-
-                        <li>
-                            <span class="label">Bedrooms</span>
-                            <span class="value">{{ property.bedrooms }}</span>
-                        </li>
-
-                        <li>
-                            <span class="label">Bathrooms</span>
-                            <span class="value">{{ property.bathrooms }}</span>
-                        </li>
-
-                        {% if distance_km is not None %}
-                            <li>
-                                <span class="label">Distance from city</span>
-                                <span class="value">{{ distance_km }} km</span>
-                            </li>
+            <div class="detail-gallery-rbo">
+                {% with primary=property.primary_image %}
+                    <div class="gallery-rbo-main">
+                        {% if primary %}
+                            <img id="gallery-main-image"
+                                 src="{{ primary.get_image_url }}"
+                                 alt="{{ property.title }}">
+                        {% else %}
+                            <div class="gallery-placeholder">No image available</div>
                         {% endif %}
-                    </ul>
+                    </div>
+                {% endwith %}
+                <div class="gallery-rbo-grid">
+                    {% for image in property.images.all|slice:"1:5" %}
+                        <button type="button"
+                                class="gallery-rbo-thumb gallery-thumb"
+                                data-image-url="{{ image.get_image_url }}"
+                                data-image-alt="{{ image.caption|default:property.title }}">
+                            <img src="{{ image.get_image_url }}"
+                                 alt="{{ image.caption|default:property.title }}">
+                        </button>
+                    {% empty %}
+                        {% for image in property.images.all|slice:":4" %}
+                            <button type="button"
+                                    class="gallery-rbo-thumb gallery-thumb"
+                                    data-image-url="{{ image.get_image_url }}"
+                                    data-image-alt="{{ image.caption|default:property.title }}">
+                                <img src="{{ image.get_image_url }}"
+                                     alt="{{ image.caption|default:property.title }}">
+                            </button>
+                        {% endfor %}
+                    {% endfor %}
                 </div>
-            </aside>
+            </div>
+            <h2 class="detail-subtitle">
+                {{ property.bedrooms }} Bedroom {{ property.property_type|title }} in {{ property.location.name }}
+            </h2>
+            <div class="detail-layout">
+                <div class="detail-main">
+                    {% if property.description %}
+                        <section class="detail-section">
+                            <h2>About this property</h2>
+                            <p>{{ property.description|linebreaksbr }}</p>
+                        </section>
+                    {% endif %}
+                    {% if property.amenities %}
+                        <section class="detail-section">
+                            <h2>Amenities</h2>
+                            <div class="amenities-grid">
+                                {% for amenity in property.amenities|split:',' %}
+                                    {% if amenity|trim %}
+                                        <span class="amenity-item">
+                                            <span class="amenity-icon" aria-hidden="true"></span>
+                                            <span>{{ amenity|trim }}</span>
+                                        </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </section>
+                    {% endif %}
+                </div>
+                <aside class="detail-sidebar">
+                    <div class="price-card">
+                        <p class="price-card-label">Nightly rate</p>
+                        <div class="price-main">
+                            ${{ property.price }}<span>/ night</span>
+                        </div>
+                        <ul class="stat-list">
+                            <li>
+                                <span class="label">Property type</span>
+                                <span class="value">{{ property.property_type|title }}</span>
+                            </li>
+                            <li>
+                                <span class="label">Status</span>
+                                <span class="value">{{ property.status|title }}</span>
+                            </li>
+                            <li>
+                                <span class="label">Bedrooms</span>
+                                <span class="value">{{ property.bedrooms }}</span>
+                            </li>
+                            <li>
+                                <span class="label">Bathrooms</span>
+                                <span class="value">{{ property.bathrooms }}</span>
+                            </li>
+                            {% if distance_km is not None %}
+                                <li>
+                                    <span class="label">Distance from city</span>
+                                    <span class="value">{{ distance_km }} km</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </aside>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
