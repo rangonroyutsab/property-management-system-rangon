@@ -52,11 +52,17 @@ def property_detail(request, slug):
         ),
         slug=slug,
     )
+
+    distance_km = None
+    if property_obj.distance_from_city is not None:
+        distance_km = round(property_obj.distance_from_city.km, 1)
+
     return render(
         request,
         "property_app/property_detail.html",
         {
             "property": property_obj,
+            "distance_km": distance_km,
         },
     )
 

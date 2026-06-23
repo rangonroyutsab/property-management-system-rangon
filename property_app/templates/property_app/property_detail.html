@@ -33,9 +33,9 @@
                 <h1>{{ property.title }}</h1>
                 <p class="detail-location">📍 {{ property.location.name }}</p>
 
-                {% if property.distance_from_city %}
+                {% if distance_km is not None %}
                     <p class="detail-distance">
-                        📏 {{ property.distance_from_city|km_value|floatformat:1 }} km from {{ property.location.name }} centre
+                        📏 {{ distance_km }} km from {{ property.location.name }}
                     </p>
                 {% endif %}
 
@@ -86,10 +86,10 @@
                             <span class="label">Bathrooms</span>
                             <span class="value">{{ property.bathrooms }}</span>
                         </li>
-                        {% if property.distance_from_city %}
+                        {% if distance_km is not None %}
                             <li>
-                                <span class="label">Distance to centre</span>
-                                <span class="value">{{ property.distance_from_city|km_value|floatformat:1 }} km</span>
+                                <span class="label">Distance from city</span>
+                                <span class="value">{{distance_km }} km</span>
                             </li>
                         {% endif %}
                     </ul>

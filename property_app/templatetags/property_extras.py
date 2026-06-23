@@ -18,18 +18,3 @@ def trim(value):
         return ""
     return str(value).strip()
 
-
-@register.filter
-def km_value(value):
-    """Return kilometers from a GeoDjango Distance object or a numeric value."""
-    if value is None:
-        return ""
-
-    km = getattr(value, "km", None)
-    if km is not None:
-        return km
-
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return value
