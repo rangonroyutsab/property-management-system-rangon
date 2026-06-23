@@ -34,8 +34,16 @@ services:
     env_file: .env
     environment:
       POSTGRES_HOST: db
+      HOME: /tmp
+      USER: app
+      LOGNAME: app
+      HF_HOME: /tmp/huggingface
+      TRANSFORMERS_CACHE: /tmp/huggingface/transformers
+      TORCH_HOME: /tmp/torch
+      TORCHINDUCTOR_CACHE_DIR: /tmp/torchinductor
     volumes:
       - .:/app
+      - hf_cache:/root/.cache/huggingface
     ports:
       - "8000:8000"
     depends_on:
@@ -44,3 +52,4 @@ services:
 
 volumes:
   postgres_data:
+  hf_cache:

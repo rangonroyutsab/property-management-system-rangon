@@ -1,10 +1,10 @@
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator
-from django.db.models import Q
 from django.http import JsonResponse
 from django.contrib.gis.db.models.functions import Distance
 
-from .models import Property, Location
+from .models import Property
+from .search import combined_location_search
 
 
 def home(request):
@@ -22,9 +22,12 @@ def property_list(request):
     properties = Property.objects.select_related("location")
 
     if query:
-        properties = properties.filter(
-            Q(location__name__icontains=query) | Q(title__icontains=query)
-        )
+        matched_locations = combined_location_search(query, top_k=10)
+        if matched_locations:
+            location_ids = [loc.id for loc in matched_locations]
+            properties = properties.filter(location__id__in=location_ids)
+        else:
+            properties = properties.none()
 
     sort_options = {
         "price_asc": "price",
@@ -72,7 +75,8 @@ def location_autocomplete(request):
     if len(query) < 2:
         return JsonResponse([], safe=False)
 
-    locations = Location.objects.filter(name__icontains=query).values("name", "slug")[
-        :6
-    ]
-    return JsonResponse(list(locations), safe=False)
+    locations = combined_location_search(query, top_k=6)
+    return JsonResponse(
+        [{"name": loc.name, "slug": loc.slug} for loc in locations],
+        safe=False,
+    )
