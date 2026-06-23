@@ -14,22 +14,39 @@
             <p>{{ page.paginator.count }} propert{{ page.paginator.count|pluralize:"y,ies" }} found</p>
         </div>
 
-        <form method="get" action="{% url 'property_list' %}" class="listing-form">
-            <div class="listing-search-bar">
-                <div class="search-bar-sm">
-                    <input
-                        class="autocomplete-input"
-                        type="text"
-                        name="q"
-                        value="{{ query|default:'' }}"
-                        placeholder="Search location or property name..."
-                        autocomplete="off"
-                    >
-                    <button type="submit" class="btn-search">Search</button>
+        <div class="listing-toolbar">
+            <form method="get" action="{% url 'property_list' %}" class="listing-form">
+                {% if sort %}
+                    <input type="hidden" name="sort" value="{{ sort }}">
+                {% endif %}
+                <div class="listing-search-bar">
+                    <div class="search-bar-sm">
+                        <input
+                            class="autocomplete-input"
+                            type="text"
+                            name="q"
+                            value="{{ query|default:'' }}"
+                            placeholder="Search location or property name..."
+                            autocomplete="off"
+                        >
+                        <button type="submit" class="btn-search">Search</button>
+                    </div>
+                    <div class="autocomplete-dropdown"></div>
                 </div>
-                <div class="autocomplete-dropdown"></div>
-            </div>
-        </form>
+            </form>
+
+            <form method="get" action="{% url 'property_list' %}" class="sort-form">
+                {% if query %}
+                    <input type="hidden" name="q" value="{{ query }}">
+                {% endif %}
+                <label for="sort">Sort by</label>
+                <select id="sort" name="sort" onchange="this.form.submit()">
+                    <option value="" {% if not sort %}selected{% endif %}>Newest</option>
+                    <option value="price_asc" {% if sort == "price_asc" %}selected{% endif %}>Price: low to high</option>
+                    <option value="price_desc" {% if sort == "price_desc" %}selected{% endif %}>Price: high to low</option>
+                </select>
+            </form>
+        </div>
 
         <div class="property-grid">
             {% for property in page %}
@@ -42,7 +59,7 @@
             {% endfor %}
         </div>
 
-        {% include "property_app/partials/_pagination.html" with page=page query=query %}
+        {% include "property_app/partials/_pagination.html" with page=page query=query sort=sort %}
     </div>
 </div>
 {% endblock %}

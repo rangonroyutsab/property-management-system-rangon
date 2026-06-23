@@ -43,16 +43,27 @@
                         }
 
                         locations.forEach(function (location) {
-                            const item = document.createElement("div");
+                            const item = document.createElement("button");
                             item.className = "autocomplete-item";
+                            item.type = "button";
 
-                            item.innerHTML = `
-                                <span class="ac-icon">📍</span>
-                                <span class="ac-text">
-                                    <strong>${location.name}</strong>
-                                    <span>Location</span>
-                                </span>
-                            `;
+                            const icon = document.createElement("span");
+                            icon.className = "ac-icon";
+                            icon.setAttribute("aria-hidden", "true");
+
+                            const text = document.createElement("span");
+                            text.className = "ac-text";
+
+                            const name = document.createElement("strong");
+                            name.textContent = location.name;
+
+                            const label = document.createElement("span");
+                            label.textContent = "Location";
+
+                            text.appendChild(name);
+                            text.appendChild(label);
+                            item.appendChild(icon);
+                            item.appendChild(text);
 
                             item.addEventListener("click", function () {
                                 input.value = location.name;

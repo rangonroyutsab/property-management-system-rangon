@@ -49,10 +49,13 @@
                 {% if property.amenities %}
                     <section class="detail-section">
                         <h2>Amenities</h2>
-                        <div class="amenities-list">
+                        <div class="amenities-grid">
                             {% for amenity in property.amenities|split:',' %}
                                 {% if amenity|trim %}
-                                    <span class="amenity-tag">{{ amenity|trim }}</span>
+                                    <span class="amenity-item">
+                                        <span class="amenity-icon" aria-hidden="true"></span>
+                                        <span>{{ amenity|trim }}</span>
+                                    </span>
                                 {% endif %}
                             {% endfor %}
                         </div>
@@ -62,6 +65,7 @@
 
             <aside class="detail-sidebar">
                 <div class="price-card">
+                    <p class="price-card-label">Nightly rate</p>
                     <div class="price-main">
                         ${{ property.price }}<span> / night</span>
                     </div>

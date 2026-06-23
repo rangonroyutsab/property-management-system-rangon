@@ -7,14 +7,23 @@
                 <div class="card-img-placeholder">No image available</div>
             {% endif %}
         {% endwith %}
+        {% if property.status %}
+            <span class="card-badge">{{ property.status|title }}</span>
+        {% endif %}
     </div>
     <div class="card-body">
         <p class="card-type">{{ property.property_type|title }}</p>
         <h3 class="card-title">{{ property.title }}</h3>
         <p class="card-location">{{ property.location.name }}</p>
-        <p class="card-meta">{{ property.bedrooms }} Bed &nbsp;·&nbsp; {{ property.bathrooms }} Bath</p>
-        <p class="card-price">
-            ${{ property.price }}<span> / Night</span>
-        </p>
+        <div class="card-meta">
+            <span>{{ property.bedrooms }} Bed</span>
+            <span>{{ property.bathrooms }} Bath</span>
+        </div>
+        <div class="card-footer">
+            <p class="card-price">
+                ${{ property.price }}<span> / night</span>
+            </p>
+            <span class="card-action">View stay</span>
+        </div>
     </div>
 </a>
