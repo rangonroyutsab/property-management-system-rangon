@@ -5,14 +5,19 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('property_app', '0001_initial'),
+        ("property_app", "0001_initial"),
     ]
 
     operations = [
         migrations.AddIndex(
-            model_name='location',
-            index=pgvector.django.indexes.HnswIndex(ef_construction=64, fields=['embedding'], m=16, name='location_embedding_idx', opclasses=['vector_cosine_ops']),
+            model_name="location",
+            index=pgvector.django.indexes.HnswIndex(
+                ef_construction=64,
+                fields=["embedding"],
+                m=16,
+                name="location_embedding_idx",
+                opclasses=["vector_cosine_ops"],
+            ),
         ),
     ]

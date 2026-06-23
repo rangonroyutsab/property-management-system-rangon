@@ -7,48 +7,99 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Location',
+            name="Location",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('slug', models.SlugField(unique=True)),
-                ('point', django.contrib.gis.db.models.fields.PointField(geography=True, srid=4326)),
-                ('embedding', pgvector.django.vector.VectorField(blank=True, dimensions=384, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("slug", models.SlugField(unique=True)),
+                (
+                    "point",
+                    django.contrib.gis.db.models.fields.PointField(
+                        geography=True, srid=4326
+                    ),
+                ),
+                (
+                    "embedding",
+                    pgvector.django.vector.VectorField(
+                        blank=True, dimensions=384, null=True
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Property',
+            name="Property",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=255)),
-                ('slug', models.SlugField(unique=True)),
-                ('description', models.TextField(blank=True)),
-                ('property_type', models.CharField(max_length=50)),
-                ('status', models.CharField(max_length=50)),
-                ('price', models.DecimalField(decimal_places=2, max_digits=12)),
-                ('bedrooms', models.PositiveSmallIntegerField(default=0)),
-                ('bathrooms', models.PositiveSmallIntegerField(default=0)),
-                ('amenities', models.TextField(blank=True)),
-                ('point', django.contrib.gis.db.models.fields.PointField(geography=True, srid=4326)),
-                ('location', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='properties', to='property_app.location')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=255)),
+                ("slug", models.SlugField(unique=True)),
+                ("description", models.TextField(blank=True)),
+                ("property_type", models.CharField(max_length=50)),
+                ("status", models.CharField(max_length=50)),
+                ("price", models.DecimalField(decimal_places=2, max_digits=12)),
+                ("bedrooms", models.PositiveSmallIntegerField(default=0)),
+                ("bathrooms", models.PositiveSmallIntegerField(default=0)),
+                ("amenities", models.TextField(blank=True)),
+                (
+                    "point",
+                    django.contrib.gis.db.models.fields.PointField(
+                        geography=True, srid=4326
+                    ),
+                ),
+                (
+                    "location",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="properties",
+                        to="property_app.location",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='PropertyImage',
+            name="PropertyImage",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='properties/%Y/%m/')),
-                ('caption', models.CharField(blank=True, max_length=255)),
-                ('is_primary', models.BooleanField(default=False)),
-                ('property', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='property_app.property')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("image", models.ImageField(upload_to="properties/%Y/%m/")),
+                ("caption", models.CharField(blank=True, max_length=255)),
+                ("is_primary", models.BooleanField(default=False)),
+                (
+                    "property",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="images",
+                        to="property_app.property",
+                    ),
+                ),
             ],
         ),
     ]

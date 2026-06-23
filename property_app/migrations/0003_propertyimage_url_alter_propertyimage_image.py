@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('property_app', '0002_location_location_embedding_idx'),
+        ("property_app", "0002_location_location_embedding_idx"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='propertyimage',
-            name='url',
+            model_name="propertyimage",
+            name="url",
             field=models.URLField(blank=True, max_length=500),
         ),
         migrations.AlterField(
-            model_name='propertyimage',
-            name='image',
-            field=models.ImageField(blank=True, upload_to='properties/%Y/%m/'),
+            model_name="propertyimage",
+            name="image",
+            field=models.ImageField(blank=True, upload_to="properties/%Y/%m/"),
         ),
     ]

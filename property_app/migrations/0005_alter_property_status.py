@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('property_app', '0004_alter_propertyimage_url'),
+        ("property_app", "0004_alter_propertyimage_url"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='property',
-            name='status',
+            model_name="property",
+            name="status",
             field=models.CharField(max_length=100),
         ),
     ]

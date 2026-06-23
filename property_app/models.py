@@ -46,8 +46,10 @@ class Property(models.Model):
 
 
 class PropertyImage(models.Model):
-    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(upload_to="properties/%Y/%m/", blank=True) 
+    property = models.ForeignKey(
+        Property, on_delete=models.CASCADE, related_name="images"
+    )
+    image = models.ImageField(upload_to="properties/%Y/%m/", blank=True)
     url = models.URLField(max_length=1000, blank=True)
     caption = models.CharField(max_length=255, blank=True)
     is_primary = models.BooleanField(default=False)
