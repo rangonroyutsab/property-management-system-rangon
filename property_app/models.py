@@ -1,15 +1,42 @@
 from django.contrib.gis.db import models
+from django.utils.text import slugify
 from pgvector.django import VectorField, HnswIndex
+
+from .embeddings import get_location_embedding
 
 
 class Location(models.Model):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
+    name = models.CharField(max_length=255, editable=False)
+    city = models.CharField(max_length=100, blank=True)
+    state = models.CharField(max_length=100, blank=True)
+    country = models.CharField(max_length=100, blank=True)
+    slug = models.SlugField(unique=True, editable=False)
     point = models.PointField(geography=True, srid=4326)
     embedding = VectorField(dimensions=384, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    def build_name(self):
+        return ", ".join(
+            part.strip()
+            for part in [self.city, self.state, self.country]
+            if part and part.strip()
+        )
+
+    def save(self, *args, **kwargs):
+        self.name = self.build_name()
+        self.slug = slugify(self.name)
+        self.embedding = get_location_embedding(self)
+
+        update_fields = kwargs.get("update_fields")
+
+        if update_fields is not None:
+            update_fields = set(update_fields)
+            update_fields.update({"name", "slug", "embedding"})
+            kwargs["update_fields"] = list(update_fields)
+
+        super().save(*args, **kwargs)
 
     class Meta:
         indexes = [
@@ -41,6 +68,7 @@ class Property(models.Model):
     def __str__(self):
         return self.title
 
+    @property
     def primary_image(self):
         return self.images.filter(is_primary=True).first() or self.images.first()
 

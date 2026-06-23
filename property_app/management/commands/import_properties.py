@@ -16,19 +16,32 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             for _, row in df.iterrows():
-                latitude = float(row["latitude"])
-                longitude = float(row["longitude"])
-                point = Point(longitude, latitude)
+                city = self.clean_value(row["city"])
+                state = self.clean_value(row["state"])
+                country = self.clean_value(row["country"])
+
+                location_name = self.build_location_name(city, state, country)
+                location_slug = slugify(location_name)
+
+                location_latitude = float(row["location_latitude"])
+                location_longitude = float(row["location_longitude"])
+                location_point = Point(location_longitude, location_latitude, srid=4326)
+
+                property_latitude = float(row["property_latitude"])
+                property_longitude = float(row["property_longitude"])
+                property_point = Point(property_longitude, property_latitude, srid=4326)
 
                 location, _ = Location.objects.get_or_create(
-                    name=row["location_name"],
+                    slug=location_slug,
                     defaults={
-                        "slug": slugify(row["location_name"]),
-                        "point": point,
+                        "city": city,
+                        "state": state,
+                        "country": country,
+                        "point": location_point,
                     },
                 )
 
-                slug = slugify(row["title"])
+                slug = slugify(f"{row['title']}-{location_name}")
 
                 property_obj, _ = Property.objects.get_or_create(
                     slug=slug,
@@ -42,11 +55,24 @@ class Command(BaseCommand):
                         "bedrooms": int(row["bedrooms"]),
                         "bathrooms": int(row["bathrooms"]),
                         "amenities": row["amenities"],
-                        "point": point,
+                        "point": property_point,
                     },
                 )
 
+                primary_image_url = row.get("primary_image_url", "")
+
+                if pd.notna(primary_image_url) and str(primary_image_url).strip():
+                    PropertyImage.objects.get_or_create(
+                        property=property_obj,
+                        url=str(primary_image_url).strip(),
+                        defaults={
+                            "caption": property_obj.title,
+                            "is_primary": True,
+                        },
+                    )
+
                 image_urls = row.get("image_urls", "")
+                image_captions = row.get("image_captions", "")
 
                 if pd.notna(image_urls) and str(image_urls).strip():
                     urls = [
@@ -55,14 +81,27 @@ class Command(BaseCommand):
                         if image_url.strip()
                     ]
 
+                    captions = []
+
+                    if pd.notna(image_captions) and str(image_captions).strip():
+                        captions = [
+                            caption.strip()
+                            for caption in str(image_captions).split("|")
+                        ]
+
                     has_primary = property_obj.images.filter(is_primary=True).exists()
 
                     for index, image_url in enumerate(urls):
+                        caption = property_obj.title
+
+                        if index < len(captions) and captions[index]:
+                            caption = captions[index]
+
                         _, image_created = PropertyImage.objects.get_or_create(
                             property=property_obj,
                             url=image_url,
                             defaults={
-                                "caption": property_obj.title,
+                                "caption": caption,
                                 "is_primary": index == 0 and not has_primary,
                             },
                         )
@@ -71,3 +110,12 @@ class Command(BaseCommand):
                             has_primary = True
 
         self.stdout.write(self.style.SUCCESS("Import complete."))
+
+    def clean_value(self, value):
+        if pd.isna(value):
+            return ""
+
+        return str(value).strip()
+
+    def build_location_name(self, city, state, country):
+        return ", ".join(part for part in [city, state, country] if part)

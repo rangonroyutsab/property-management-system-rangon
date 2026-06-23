@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.gis.admin import GISModelAdmin
 from django.utils.html import format_html
+
 from .models import Location, Property, PropertyImage
 
 
@@ -32,17 +33,33 @@ class PropertyAdmin(GISModelAdmin):
         "property_type",
         "status",
     )
-    list_filter = ("property_type", "status", "bedrooms")
-    search_fields = ("title", "description", "location__name")
+    list_filter = (
+        "property_type",
+        "status",
+        "bedrooms",
+        "location__country",
+        "location__state",
+        "location__city",
+    )
+    search_fields = (
+        "title",
+        "description",
+        "location__name",
+        "location__city",
+        "location__state",
+        "location__country",
+    )
     prepopulated_fields = {"slug": ("title",)}
     inlines = [PropertyImageInline]
 
 
 @admin.register(Location)
 class LocationAdmin(GISModelAdmin):
-    list_display = ("name", "slug")
-    search_fields = ("name",)
-    prepopulated_fields = {"slug": ("name",)}
+    list_display = ("name", "city", "state", "country", "slug")
+    list_filter = ("country", "state", "city")
+    search_fields = ("name", "city", "state", "country")
+    readonly_fields = ("name", "slug")
+    exclude = ("embedding",)
 
 
 @admin.register(PropertyImage)

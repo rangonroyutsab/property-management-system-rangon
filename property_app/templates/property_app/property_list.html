@@ -52,7 +52,7 @@
                 {% for property in page %}
                     {% include "property_app/partials/_property_card.html" with property=property %}
                 {% empty %}
-                    <div class="empty-state empty-state-card">
+                    <div class="empty-state">
                         <p>
                             No properties found
                             {% if query %}for “{{ query }}”{% endif %}
